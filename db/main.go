@@ -20,7 +20,7 @@ func main() {
 
 	zap.L().Info("start listing on port ", zap.String("port", port))
 
-	listener, err := net.Listen("tcp", "localhost:"+port)
+	listener, err := net.Listen("tcp", "0.0.0.0:"+port)
 	if err != nil {
 		zap.L().Panic("failed to start server", zap.Error(err))
 	}
