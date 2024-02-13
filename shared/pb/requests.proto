@@ -1,0 +1,49 @@
+syntax = "proto3";
+
+package pb;
+option go_package = "github.com/ImPedro29/rinha-backend-2024/shared/models/pb;pb";
+
+service BankService {
+  rpc CreateTransaction(TransactionRequest) returns (TransactionResponse) {}
+  rpc Statement(StatementRequest) returns (StatementResponse) {}
+}
+
+enum TransactionType {
+  credit = 0;
+  debit = 1;
+}
+
+message TransactionRequest {
+  int64 client_id = 1;
+  int64 amount = 2;
+  TransactionType type = 3;
+  string description = 4;
+  string createdAt = 5;
+}
+
+message TransactionResponse {
+  int64 limit = 1;
+  int64 balance = 2;
+}
+
+message StatementRequest {
+  int64 client_id = 1;
+}
+
+message StatementResponse {
+  Balance balance = 1;
+  repeated LastTransactions lastTransactions = 2;
+}
+
+message Balance {
+  int64 total = 1;
+  string date = 2;
+  int64 limit = 3;
+}
+
+message LastTransactions {
+  int64 value = 1;
+  TransactionType type = 2;
+  string description = 3;
+  string createdAt = 4;
+}
