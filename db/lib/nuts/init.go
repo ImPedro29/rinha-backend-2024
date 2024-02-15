@@ -42,5 +42,4 @@ func (s *db) Init() error {
 
 		return nil
 	})
-
 }

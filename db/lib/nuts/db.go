@@ -8,7 +8,7 @@ import (
 
 func NewDB() interfaces.DB {
 	opts := nutsdb.DefaultOptions
-	opts.SyncEnable = false
+	opts.SyncEnable = true
 	instance, err := nutsdb.Open(
 		opts,
 		nutsdb.WithDir("data"),

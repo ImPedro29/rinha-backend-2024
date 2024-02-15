@@ -70,7 +70,6 @@ func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionR
 
 		return nil
 	}); err != nil {
-		zap.L().Error("failed to create transaction", zap.Error(err))
 		return nil, err
 	}
 

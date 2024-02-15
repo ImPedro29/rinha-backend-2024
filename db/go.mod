@@ -3,7 +3,7 @@ module github.com/ImPedro29/rinha-backend-2024/db
 go 1.21.5
 
 require (
-	github.com/ImPedro29/rinha-backend-2024/shared v0.0.0-20240213200638-8db32c7b15d1
+	github.com/ImPedro29/rinha-backend-2024/shared v0.0.0-20240215034446-41248850ccc6
 	github.com/golang/protobuf v1.5.3
 	github.com/nutsdb/nutsdb v1.0.3
 	github.com/tidwall/buntdb v1.3.0
