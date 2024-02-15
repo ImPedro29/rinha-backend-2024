@@ -6,7 +6,6 @@ import (
 
 	"github.com/ImPedro29/rinha-backend-2024/api/routes"
 	"github.com/valyala/fasthttp"
-	"github.com/valyala/fasthttp/prefork"
 	"go.uber.org/zap"
 )
 
@@ -25,9 +24,9 @@ func main() {
 	server := &fasthttp.Server{
 		Handler: routes.InitRoutes,
 	}
-	preforkServer := prefork.New(server)
+	//preforkServer := prefork.New(server)
 
-	if err := preforkServer.ListenAndServe(":" + port); err != nil {
+	if err := server.ListenAndServe(":" + port); err != nil {
 		log.Fatalf("Error in ListenAndServe: %v", err)
 	}
 }
