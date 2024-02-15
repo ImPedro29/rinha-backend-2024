@@ -3,13 +3,17 @@ package main
 import (
 	"log"
 	"os"
+	"runtime"
 
 	"github.com/ImPedro29/rinha-backend-2024/api/routes"
 	"github.com/valyala/fasthttp"
+	"github.com/valyala/fasthttp/prefork"
 	"go.uber.org/zap"
 )
 
 func main() {
+	runtime.GOMAXPROCS(2)
+
 	logger, _ := zap.NewProduction()
 	zap.ReplaceGlobals(logger)
 	defer logger.Sync()
@@ -24,9 +28,9 @@ func main() {
 	server := &fasthttp.Server{
 		Handler: routes.InitRoutes,
 	}
-	//preforkServer := prefork.New(server)
 
-	if err := server.ListenAndServe(":" + port); err != nil {
+	preforkServer := prefork.New(server)
+	if err := preforkServer.ListenAndServe(":" + port); err != nil {
 		log.Fatalf("Error in ListenAndServe: %v", err)
 	}
 }
