@@ -1,13 +1,15 @@
-package lib
+package nuts
 
 import (
 	"fmt"
 	"strconv"
 
 	"github.com/ImPedro29/rinha-backend-2024/db/constants"
+	"github.com/ImPedro29/rinha-backend-2024/shared/common"
 	"github.com/ImPedro29/rinha-backend-2024/shared/pb"
 	"github.com/golang/protobuf/proto"
 	"github.com/nutsdb/nutsdb"
+	"go.uber.org/zap"
 )
 
 func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionResponse, error) {
@@ -41,7 +43,14 @@ func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionR
 
 		balance = balance + amount
 		if balance < -limit {
-			return ErrInsufficientBalance
+			return common.ErrInsufficientBalance
+		}
+
+		if err := tx.IncrBy(constants.ClientData, balanceKey, amount); err != nil {
+			if err := tx.Rollback(); err != nil {
+				zap.L().Error("failed to rollback", zap.Error(err))
+			}
+			return err
 		}
 
 		value, err := proto.Marshal(request)
@@ -49,11 +58,10 @@ func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionR
 			return err
 		}
 
-		if err := tx.IncrBy(constants.ClientData, balanceKey, amount); err != nil {
-			return err
-		}
-
 		if err := tx.LPush(constants.Transactions, transactionKey, value); err != nil {
+			if err := tx.Rollback(); err != nil {
+				zap.L().Error("failed to rollback", zap.Error(err))
+			}
 			return err
 		}
 
@@ -62,6 +70,7 @@ func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionR
 
 		return nil
 	}); err != nil {
+		zap.L().Error("failed to create transaction", zap.Error(err))
 		return nil, err
 	}
 

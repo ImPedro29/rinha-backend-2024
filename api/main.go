@@ -21,7 +21,12 @@ func main() {
 
 	zap.L().Info("start listing on port ", zap.String("port", port))
 
-	if err := fasthttp.ListenAndServe(":"+port, routes.InitRoutes); err != nil {
+	server := &fasthttp.Server{
+		Handler: routes.InitRoutes,
+	}
+	//preforkServer := prefork.New(server)
+
+	if err := server.ListenAndServe(":" + port); err != nil {
 		log.Fatalf("Error in ListenAndServe: %v", err)
 	}
 }

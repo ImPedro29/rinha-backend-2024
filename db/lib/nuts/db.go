@@ -1,4 +1,4 @@
-package lib
+package nuts
 
 import (
 	"github.com/ImPedro29/rinha-backend-2024/db/interfaces"
@@ -8,7 +8,7 @@ import (
 
 func NewDB() interfaces.DB {
 	opts := nutsdb.DefaultOptions
-	//opts.SyncEnable = false
+	opts.SyncEnable = false
 	instance, err := nutsdb.Open(
 		opts,
 		nutsdb.WithDir("data"),

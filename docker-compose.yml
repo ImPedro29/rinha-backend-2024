@@ -2,7 +2,7 @@ version: "3.5"
 
 services:
   api01: &api
-    image: impedr029/rinha-2024-api:0.1
+    build: ./api
     hostname: api01
     environment:
       - DB_ADDRESS=db:4001
@@ -36,10 +36,10 @@ services:
       resources:
         limits:
           cpus: "0.15"
-          memory: "10MB"
+          memory: "20MB"
 
   db:
-    image: impedr029/rinha-2024-db:0.1
+    build: ./db
     hostname: db
     environment:
       - PORT=4001
@@ -47,7 +47,7 @@ services:
       resources:
         limits:
           cpus: "0.25"
-          memory: "140MB"
+          memory: "130MB"
 
 networks:
   default:

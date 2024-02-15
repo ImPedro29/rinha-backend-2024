@@ -1,4 +1,4 @@
-package lib
+package nuts
 
 import (
 	"github.com/nutsdb/nutsdb"
@@ -6,10 +6,4 @@ import (
 
 type db struct {
 	instance *nutsdb.DB
-}
-
-type client struct {
-	id      int64
-	balance int64
-	limit   int64
 }

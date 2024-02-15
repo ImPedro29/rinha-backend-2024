@@ -1,4 +1,4 @@
-package lib
+package nuts
 
 import (
 	"errors"
@@ -24,18 +24,18 @@ func (s *db) Init() error {
 	}
 
 	return s.instance.Update(func(tx *nutsdb.Tx) error {
-		for _, client := range clients {
+		for _, client := range constants.Clients {
 			if err := tx.PutIfNotExists(
 				constants.ClientData,
-				[]byte(fmt.Sprintf(`%d-balance`, client.id)),
+				[]byte(fmt.Sprintf(`%d-balance`, client.ID)),
 				[]byte(`0`),
 				0); err != nil {
 				return err
 			}
 			if err := tx.PutIfNotExists(
 				constants.ClientData,
-				[]byte(fmt.Sprintf(`%d-limit`, client.id)),
-				[]byte(fmt.Sprintf("%d", client.limit)), 0); err != nil {
+				[]byte(fmt.Sprintf(`%d-limit`, client.ID)),
+				[]byte(fmt.Sprintf("%d", client.Limit)), 0); err != nil {
 				return err
 			}
 		}

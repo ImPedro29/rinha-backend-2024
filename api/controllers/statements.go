@@ -27,13 +27,13 @@ func (s Controller) Statements(ctx *fasthttp.RequestCtx, clientId string) {
 		ClientId: id,
 	})
 	if err != nil {
-		if strings.Contains(err.Error(), "key not found") {
+		if strings.Contains(err.Error(), "not found") {
 			ctx.Response.SetStatusCode(http.StatusNotFound)
 			return
 		}
 
 		ctx.Response.SetStatusCode(http.StatusInternalServerError)
-		if _, err := ctx.WriteString(`{"message": "failed to create transaction"}`); err != nil {
+		if _, err := ctx.WriteString(`{"message": "failed to get transaction transaction"}`); err != nil {
 			zap.L().Error("failed to write response", zap.Error(err))
 		}
 		return

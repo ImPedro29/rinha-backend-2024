@@ -2,12 +2,14 @@ package controllers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
 
 	"github.com/ImPedro29/rinha-backend-2024/api/models"
-	"github.com/ImPedro29/rinha-backend-2024/db/lib"
+	"github.com/ImPedro29/rinha-backend-2024/api/utils"
+	"github.com/ImPedro29/rinha-backend-2024/shared/common"
 	"github.com/ImPedro29/rinha-backend-2024/shared/pb"
 	"github.com/valyala/fasthttp"
 	"go.uber.org/zap"
@@ -16,7 +18,7 @@ import (
 func (s Controller) CreateTransaction(ctx *fasthttp.RequestCtx, clientId string) {
 	id, err := strconv.ParseInt(clientId, 10, 64)
 	if err != nil {
-		ctx.Response.SetStatusCode(http.StatusBadRequest)
+		ctx.Response.SetStatusCode(http.StatusUnprocessableEntity)
 		if _, err := ctx.WriteString(`{"message": "client id is not a integer"}`); err != nil {
 			zap.L().Error("failed to write response", zap.Error(err))
 		}
@@ -25,8 +27,16 @@ func (s Controller) CreateTransaction(ctx *fasthttp.RequestCtx, clientId string)
 
 	var request models.TransactionRequest
 	if err := json.Unmarshal(ctx.Request.Body(), &request); err != nil {
-		ctx.Response.SetStatusCode(http.StatusBadRequest)
+		ctx.Response.SetStatusCode(http.StatusUnprocessableEntity)
 		if _, err := ctx.WriteString(`{"message": "invalid data sent"}`); err != nil {
+			zap.L().Error("failed to write response", zap.Error(err))
+		}
+		return
+	}
+
+	if err := utils.Validate.Struct(request); err != nil {
+		ctx.Response.SetStatusCode(http.StatusUnprocessableEntity)
+		if _, err := ctx.WriteString(fmt.Sprintf(`{"message": "%s"}`, err.Error())); err != nil {
 			zap.L().Error("failed to write response", zap.Error(err))
 		}
 		return
@@ -44,7 +54,7 @@ func (s Controller) CreateTransaction(ctx *fasthttp.RequestCtx, clientId string)
 		Description: request.Description,
 	})
 	if err != nil {
-		if strings.Contains(err.Error(), lib.ErrInsufficientBalance.Error()) {
+		if strings.Contains(err.Error(), common.ErrInsufficientBalance.Error()) {
 			ctx.Response.SetStatusCode(http.StatusUnprocessableEntity)
 			if _, err := ctx.WriteString(`{"message": "insufficient balance"}`); err != nil {
 				zap.L().Error("failed to write response", zap.Error(err))
@@ -52,7 +62,7 @@ func (s Controller) CreateTransaction(ctx *fasthttp.RequestCtx, clientId string)
 			return
 		}
 
-		if strings.Contains(err.Error(), "key not found") {
+		if strings.Contains(err.Error(), "not found") {
 			ctx.Response.SetStatusCode(http.StatusNotFound)
 			return
 		}
