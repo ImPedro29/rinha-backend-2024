@@ -14,12 +14,12 @@ import (
 
 func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionResponse, error) {
 	var res pb.TransactionResponse
+	balanceKey := []byte(fmt.Sprintf(`%d-balance`, request.ClientId))
+	limitKey := []byte(fmt.Sprintf(`%d-limit`, request.ClientId))
+	transactionKey := []byte(fmt.Sprintf(`%d-transactions`, request.ClientId))
 
 	if err := s.instance.Update(func(tx *nutsdb.Tx) error {
 		// validation limit for debit transactions
-		balanceKey := []byte(fmt.Sprintf(`%d-balance`, request.ClientId))
-		limitKey := []byte(fmt.Sprintf(`%d-limit`, request.ClientId))
-		transactionKey := []byte(fmt.Sprintf(`%d-transactions`, request.ClientId))
 
 		data, err := tx.MGet(constants.ClientData, balanceKey, limitKey)
 		if err != nil {
@@ -39,12 +39,12 @@ func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionR
 		amount := request.Amount
 		if request.Type == pb.TransactionType_debit {
 			amount = -request.Amount
+			if (balance + amount) < -limit {
+				return common.ErrInsufficientBalance
+			}
 		}
 
 		balance = balance + amount
-		if balance < -limit {
-			return common.ErrInsufficientBalance
-		}
 
 		if err := tx.IncrBy(constants.ClientData, balanceKey, amount); err != nil {
 			if err := tx.Rollback(); err != nil {

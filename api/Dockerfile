@@ -6,14 +6,15 @@ COPY go.mod .
 
 RUN go mod download
 
-ENV GOOS linux
-ENV GOARCH amd64
+#ENV GOOS linux
+#ENV GOARCH amd64
 
 COPY . .
 
 RUN go build -o app
 
-FROM --platform=linux/amd64 alpine
+FROM alpine
+#FROM --platform=linux/amd64 alpine
 
 WORKDIR /app
 

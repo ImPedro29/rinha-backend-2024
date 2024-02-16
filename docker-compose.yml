@@ -14,8 +14,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.55"
-          memory: "200MB"
+          cpus: "0.25"
+          memory: "100MB"
 
   api02:
     <<: *api
@@ -35,9 +35,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.15"
+          cpus: "0.2"
           memory: "20MB"
-
   db:
     build: ./db
     hostname: db
@@ -46,8 +45,8 @@ services:
     deploy:
       resources:
         limits:
-          cpus: "0.25"
-          memory: "130MB"
+          cpus: "0.8"
+          memory: "330MB"
 
 networks:
   default:

@@ -18,6 +18,7 @@ type Controller struct {
 func InitControllers(listener net.Listener) {
 	server := grpc.NewServer()
 
+	//db := bunt.NewDB()
 	db := nuts.NewDB()
 	if err := db.Init(); err != nil {
 		zap.L().Panic("failed to initialize db", zap.Error(err))

@@ -71,7 +71,7 @@ func (s *db) GetStatement(request *pb.StatementRequest) (*pb.StatementResponse, 
 
 		return nil
 	}); err != nil {
-		zap.L().Error("failed to get statement", zap.Error(err))
+		//zap.L().Error("failed to get statement", zap.Error(err))
 		return nil, err
 	}
 

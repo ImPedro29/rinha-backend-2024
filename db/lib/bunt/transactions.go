@@ -9,7 +9,6 @@ import (
 	"github.com/ImPedro29/rinha-backend-2024/shared/common"
 	"github.com/ImPedro29/rinha-backend-2024/shared/pb"
 	"github.com/tidwall/buntdb"
-	"go.uber.org/zap"
 )
 
 func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionResponse, error) {
@@ -70,7 +69,7 @@ func (s *db) CreateTransaction(request *pb.TransactionRequest) (*pb.TransactionR
 
 		return err
 	}); err != nil {
-		zap.L().Error("failed to create transaction", zap.Error(err))
+		//zap.L().Error("failed to create transaction", zap.Error(err))
 		return nil, err
 	}
 

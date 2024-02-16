@@ -12,7 +12,7 @@ import (
 )
 
 func main() {
-	runtime.GOMAXPROCS(2)
+	runtime.GOMAXPROCS(8)
 
 	logger, _ := zap.NewProduction()
 	zap.ReplaceGlobals(logger)

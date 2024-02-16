@@ -8,7 +8,12 @@ import (
 
 func NewDB() interfaces.DB {
 	opts := nutsdb.DefaultOptions
-	opts.SyncEnable = true
+	opts.SyncEnable = false // is faster!
+	//opts.RWMode = nutsdb.MMap                       // seems better
+	opts.SegmentSize = 8 * nutsdb.MB                 // testing
+	opts.CommitBufferSize = 50 * nutsdb.MB           // is not game change
+	opts.HintKeyAndRAMIdxCacheSize = 100 * nutsdb.MB // testing
+
 	instance, err := nutsdb.Open(
 		opts,
 		nutsdb.WithDir("data"),
